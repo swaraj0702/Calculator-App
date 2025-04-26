@@ -32,7 +32,7 @@ pipeline {
             steps {
                 bat '''
                 call %VENV_DIR%\\Scripts\\activate
-                pytest Calculator-App\\test_calculator.py
+                pytest test_calculator.py
                 '''
             }
         }
