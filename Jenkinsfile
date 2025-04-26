@@ -18,7 +18,7 @@ pipeline {
             steps {
                 echo 'Running tests...'
                 // Run tests using pytest (adjust to match your testing framework)
-                sh 'pytest test_calculator.py'
+                bat 'pytest test_calculator.py'
             }
         }
         stage('Deploy') {
