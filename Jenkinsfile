@@ -1,32 +1,39 @@
 pipeline {
     agent any
 
+    environment {
+        VENV_DIR = 'venv'  // virtual environment directory
+    }
+
     stages {
         stage('Checkout') {
             steps {
-                // Checkout the code from Git
                 checkout scm
             }
         }
-        stage('Build') {
+
+        stage('Setup Python Virtual Environment') {
             steps {
-                echo 'Building the application...'
-                // Add any build steps if needed, e.g., setup or install
+                bat 'python -m venv %VENV_DIR%'
             }
         }
-        stage('Test') {
+
+        stage('Activate and Install Dependencies') {
             steps {
-                echo 'Installing pytest...'
-                bat 'pip install pytest'
-                echo 'Running tests...'
-                // Run tests using pytest
-                bat 'pytest test_calculator.py'
+                bat '''
+                call %VENV_DIR%\\Scripts\\activate
+                python -m pip install --upgrade pip
+                pip install pytest
+                '''
             }
         }
-        stage('Deploy') {
+
+        stage('Run Tests') {
             steps {
-                echo 'Deploying the application...'
-                // You can add deployment steps here if required
+                bat '''
+                call %VENV_DIR%\\Scripts\\activate
+                pytest Calculator-App\\test_calculator.py
+                '''
             }
         }
     }
@@ -34,13 +41,14 @@ pipeline {
     post {
         always {
             echo 'Cleaning up...'
-            // Any cleanup steps can go here
+            // Optional: clean virtual environment after build
+            deleteDir()
         }
         success {
-            echo 'Build and tests passed successfully!'
+            echo 'Build and Tests passed!'
         }
         failure {
-            echo 'Build or tests failed.'
+            echo 'Build or Tests failed.'
         }
     }
 }
