@@ -16,8 +16,10 @@ pipeline {
         }
         stage('Test') {
             steps {
+                echo 'Installing pytest...'
+                bat 'pip install pytest'
                 echo 'Running tests...'
-                // Run tests using pytest (adjust to match your testing framework)
+                // Run tests using pytest
                 bat 'pytest test_calculator.py'
             }
         }
